@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/mailPlugBoard
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+mybatis:
+  config-location: classpath:configuration.xml
+  mapper-locations: classpath:mappers/*.xml
