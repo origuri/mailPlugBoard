@@ -39,4 +39,27 @@ public class BoardRepositoryImpl implements BoardRepository {
         }
         return result;
     }
+
+    // 게시판 삭제 메소드
+    @Override
+    public int deleteBoardByBoardId(Long boardId) {
+        int result = 0;
+        try {
+            result = session.delete("deleteBoardByBoardId", boardId);
+        } catch (Exception e){
+            log.error("레파지토리 deleteBoardByBoardId 에러 -> {}",e.getMessage());
+        }
+        return result;
+    }
+    // 게시판 수정 메소드
+    @Override
+    public int updateBoardByBoardId(BoardDto boardDto) {
+        int result = 0;
+        try {
+            result = session.update("updateBoardByBoardId", boardDto);
+        } catch (Exception e){
+            log.error("레파지토리 updateBoardByBoardId 에러 -> {}",e.getMessage());
+        }
+        return result;
+    }
 }

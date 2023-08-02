@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class BoardDto extends Writer {
 
-    private int boardId;
+    private Long boardId;
     private String boardType;
     private String boardState;
 }

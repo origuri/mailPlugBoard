@@ -32,4 +32,26 @@ public class BoardService {
         int result = boardRepository.insertBoardByBoardDto(boardDto);
         return result;
     }
+
+    // 게시판 삭제 메소드
+    public int removeBoardByBoardId(Long boardId) {
+        int result = 0;
+        if(boardId != null){
+            result = boardRepository.deleteBoardByBoardId(boardId);
+            return result;
+        }else{
+            throw new IllegalArgumentException("id가 없습니다");
+        }
+
+    }
+
+    public int modifyBoardByBoardId(BoardDto boardDto) {
+        int result = 0;
+        if(boardDto.getBoardId() != null){
+            result = boardRepository.updateBoardByBoardId(boardDto);
+            return result;
+        }else{
+            throw new IllegalArgumentException("id가 없습니다");
+        }
+    }
 }

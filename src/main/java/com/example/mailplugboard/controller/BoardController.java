@@ -51,4 +51,30 @@ public class BoardController {
         }
     }
 
+    // 게시판 삭제 메소드
+    @DeleteMapping("/{boardId}")
+    @ResponseBody
+    public ResponseEntity<String> boardRemoveByBoardId(@PathVariable("boardId") Long boardId){
+        int result = 0; 
+        result = boardService.removeBoardByBoardId(boardId);
+        if(result > 0){
+            return new ResponseEntity<>("삭제 완료!",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("삭제 실패", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // 게시판 수정 메소드
+    @PutMapping("/{boardId}")
+    @ResponseBody
+    public ResponseEntity<String> boardModifyByBoardId(@RequestBody BoardDto boardDto){
+        log.info("boardDto 값 잘 들어왔나? -> {}", boardDto);
+        int result = boardService.modifyBoardByBoardId(boardDto);
+        if(result > 0){
+            return new ResponseEntity<>("수정 완료!",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("수정 실패", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
