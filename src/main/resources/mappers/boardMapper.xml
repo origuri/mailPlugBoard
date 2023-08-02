@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardMapper">
+    <select id="selectBoardList" resultType="BoardDto">
+        SELECT * FROM board
+    </select>
+
+    <!--게시판 등록-->
+    <insert id="insertBoardByBoardDto" parameterType="BoardDto">
+        INSERT INTO board (display_name, board_type, is_favorite)
+        VALUES (#{displayName}, #{boardType}, #{isFavorite})
+    </insert>
+</mapper>
