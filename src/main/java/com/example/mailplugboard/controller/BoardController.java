@@ -2,7 +2,8 @@ package com.example.mailplugboard.controller;
 
 import com.example.mailplugboard.model.board.BoardDto;
 import com.example.mailplugboard.model.board.BoardListDto;
-import com.example.mailplugboard.service.BoardService;
+
+import com.example.mailplugboard.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

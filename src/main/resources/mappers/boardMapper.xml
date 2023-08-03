@@ -9,8 +9,8 @@
 
     <!--게시판 등록-->
     <insert id="insertBoardByBoardDto" parameterType="BoardDto">
-        INSERT INTO board (display_name, board_type)
-        VALUES (#{displayName}, #{boardType})
+        INSERT INTO board (display_name, board_type, created_date_time)
+        VALUES (#{displayName}, #{boardType}, CURRENT_TIMESTAMP)
     </insert>
 
     <!--게시판 삭제-->
@@ -25,7 +25,8 @@
         UPDATE  board
         SET     display_name    = #{displayName},
                 board_type      = #{boardType},
-                board_state     = #{boardState}
+                board_state     = #{boardState},
+                updated_date_time = CURRENT_TIMESTAMP
         WHERE   board_id        = #{boardId}
     </update>
 </mapper>
