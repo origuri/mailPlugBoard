@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -30,5 +32,15 @@ public class PostService {
     }
 
 
-
+    /*
+     * 파라미터 : boardId, postId
+     * 게시글의 상세 내역 조회
+     * */
+    public PostDto findPostByBoardIdAndPostId(Long boardId, Long postId) {
+        Map<String, Long> BoardIdAndPostId = new HashMap<>();
+        BoardIdAndPostId.put("boardId", boardId);
+        BoardIdAndPostId.put("postId", postId);
+        PostDto postDto = postRepository.selectPostByBoradIdAndPostId(BoardIdAndPostId);
+        return postDto;
+    }
 }
