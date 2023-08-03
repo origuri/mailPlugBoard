@@ -1,6 +1,7 @@
 package com.example.mailplugboard.repository.post;
 
 
+import com.example.mailplugboard.model.comment.CommentDto;
 import com.example.mailplugboard.model.post.PostDto;
 
 import java.util.List;
@@ -34,4 +35,13 @@ public interface PostRepository {
      * 파라미터 : boardId, postId
      * */
     int deletePostByBoardIdAndPostId(Map<String, Long> boardIdAndPostId);
+
+    /*
+     * 댓글 등록 성공 시에 commentCount를 올려주는 메소드
+     * 파라미터 : boardId, postId
+     * */
+    int updatePostCountsByCommentDto(Map<String, Long> boardIdAndPostId);
+
+
+
 }

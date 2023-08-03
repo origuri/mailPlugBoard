@@ -95,4 +95,21 @@ public class PostRepositoryImpl implements PostRepository{
         }
         return result;
     }
+
+    /*
+     * 댓글 등록 성공 시에 commentCount를 올려주는 메소드
+     * 파라미터 : boardId, postId
+     * */
+    @Override
+    public int updatePostCountsByCommentDto(Map<String, Long> boardIdAndPostId) {
+        int result = 0;
+        try{
+            result = session.update("updatePostCountsByCommentDto", boardIdAndPostId);
+            log.info("레파지토리 updatePostCountsByCommentDto result -> {}",result);
+        }catch (Exception e){
+            log.error("레파지토리 updatePostCountsByCommentDto 에러 -> {}", e.getMessage());
+
+        }
+        return result;
+    }
 }

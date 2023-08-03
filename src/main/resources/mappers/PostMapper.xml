@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="BoardMapper">
+<mapper namespace="postMapper">
     <!--특정 게시판에 있는 게시글 전체 조회-->
     <select id="selectPostListByBoardId" parameterType="java.lang.Long" resultType="PostDto">
         SELECT p.*, b.display_name AS board_display_name
         FROM post p, board b
         WHERE p.board_id = b.board_id
           AND p.board_id = #{board_id}
-        ORDER BY p.post_id
+        ORDER BY p.created_date_time DESC
     </select>
 
+    <!--게시글 상세 조회-->
     <select id="selectPostByBoardIdAndPostId" parameterType="java.util.Map" resultType="PostDto">
         SELECT p.*, b.display_name AS board_display_name
         FROM  post p, board b
@@ -18,6 +19,7 @@
         AND p.board_id = #{boardId} AND p.post_id = #{postId}
     </select>
 
+    <!-- 게시글 등록-->
     <insert id="insertPostByPostDto" parameterType="PostDto">
         INSERT INTO post(board_id, post_id, title, display_name, contents, created_date_time)
         VALUES (
@@ -32,6 +34,7 @@
                );
     </insert>
 
+    <!-- 게시글 수정-->
     <update id="updatePostByPostDto" parameterType="PostDto">
         UPDATE  post
         SET     title               = #{title},
@@ -42,11 +45,19 @@
         AND     post_id             = #{postId}
     </update>
 
+    <!--게시글 삭제-->
     <delete id="deletePostByBoardIdAndPostId" parameterType="java.util.Map">
         DELETE
         FROM    post
         where   board_id = #{boardId}
         AND     post_id  = #{postId}
     </delete>
+
+    <!--댓글 등록 시 commentCount 올려줌-->
+    <update id="updatePostCountsByCommentDto" parameterType="java.util.Map">
+        UPDATE  post
+        SET     comments_count = ((SELECT comments_count FROM post WHERE board_id = #{boardId} and post_id = #{postId})+1)
+        WHERE   board_id = #{boardId} and post_id = #{postId}
+    </update>
 
 </mapper>

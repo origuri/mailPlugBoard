@@ -55,7 +55,7 @@ public class PostController {
     * 게시글 등록 메소드
     * 파라미터 : postDto(boardId, title, displayName, contents)
     * */
-    @PostMapping("/post")
+    @PostMapping("/post/write")
     @ResponseBody
     public ResponseEntity postAddByPostDto(@PathVariable("boardId") Long boardId, @RequestBody PostDto postDto){
         postDto.setBoardId(boardId);
