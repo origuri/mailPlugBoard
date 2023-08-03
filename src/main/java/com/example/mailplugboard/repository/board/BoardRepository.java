@@ -1,4 +1,4 @@
-package com.example.mailplugboard.repository;
+package com.example.mailplugboard.repository.board;
 
 import com.example.mailplugboard.model.board.BoardDto;
 

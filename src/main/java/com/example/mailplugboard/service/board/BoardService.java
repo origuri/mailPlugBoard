@@ -1,8 +1,8 @@
-package com.example.mailplugboard.service;
+package com.example.mailplugboard.service.board;
 
 import com.example.mailplugboard.model.board.BoardDto;
 import com.example.mailplugboard.model.board.BoardListDto;
-import com.example.mailplugboard.repository.BoardRepository;
+import com.example.mailplugboard.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
