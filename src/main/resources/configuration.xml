@@ -7,5 +7,6 @@
 
    <typeAliases>
         <typeAlias alias="BoardDto" type="com.example.mailplugboard.model.board.BoardDto"/>
+        <typeAlias alias="PostDto" type="com.example.mailplugboard.model.post.PostDto"/>
     </typeAliases>
 </configuration>
