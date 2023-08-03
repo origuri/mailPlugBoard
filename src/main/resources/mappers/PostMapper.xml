@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardMapper">
+    <!--특정 게시판에 있는 게시글 전체 조회-->
+    <select id="selectPostListByBoardId" parameterType="java.lang.Long" resultType="PostDto">
+        SELECT p.*, b.display_name AS board_display_name
+        FROM post p, board b
+        WHERE p.board_id = b.board_id
+          AND p.board_id = #{board_id}
+        ORDER BY p.post_id
+    </select>
+</mapper>

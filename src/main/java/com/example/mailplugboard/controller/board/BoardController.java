@@ -1,4 +1,4 @@
-package com.example.mailplugboard.controller;
+package com.example.mailplugboard.controller.board;
 
 import com.example.mailplugboard.model.board.BoardDto;
 import com.example.mailplugboard.model.board.BoardListDto;
