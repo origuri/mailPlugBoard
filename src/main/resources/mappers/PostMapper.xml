@@ -12,9 +12,41 @@
     </select>
 
     <select id="selectPostByBoardIdAndPostId" parameterType="java.util.Map" resultType="PostDto">
-        SELECT *
-        FROM  post
-        WHERE board_id = #{boardId} AND post_id = #{postId}
+        SELECT p.*, b.display_name AS board_display_name
+        FROM  post p, board b
+        WHERE p.board_id = b.board_id
+        AND p.board_id = #{boardId} AND p.post_id = #{postId}
     </select>
+
+    <insert id="insertPostByPostDto" parameterType="PostDto">
+        INSERT INTO post(board_id, post_id, title, display_name, contents, created_date_time)
+        VALUES (
+                #{boardId},
+                   COALESCE(
+                           (SELECT MAX(post_id) + 1 FROM post WHERE board_id = #{boardId}), 1
+                       )
+               , #{title}
+               , #{displayName}
+               , #{contents}
+               , CURRENT_TIMESTAMP
+               );
+    </insert>
+
+    <update id="updatePostByPostDto" parameterType="PostDto">
+        UPDATE  post
+        SET     title               = #{title},
+                display_name        = #{displayName},
+                contents            = #{contents},
+                updated_date_time   = CURRENT_TIMESTAMP
+        WHERE   board_id            = #{boardId}
+        AND     post_id             = #{postId}
+    </update>
+
+    <delete id="deletePostByBoardIdAndPostId" parameterType="java.util.Map">
+        DELETE
+        FROM    post
+        where   board_id = #{boardId}
+        AND     post_id  = #{postId}
+    </delete>
 
 </mapper>

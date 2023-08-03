@@ -16,8 +16,11 @@ import java.util.List;
 @Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
-    
-    // 게시판 종류를 전부 가져오는 메소드
+
+    /*
+     * 게시판 전부를 가져오는 메소드
+     * 파라미터 : 없음
+     * */
     public BoardListDto findBoardList() {
         BoardListDto boardListDto = new BoardListDto();
         List<BoardDto> boardDtos = boardRepository.selectBoardList();
@@ -27,13 +30,19 @@ public class BoardService {
         boardListDto.setCount(boardDtos.size());
         return boardListDto;
     }
-    // 게시판 생성 메소드
+    /*
+     * 게시판 생성 메소드
+     * 파라미터 : boradDto(displayName, boardType)
+     * */
     public int addBoardByBoardDto(BoardDto boardDto) {
         int result = boardRepository.insertBoardByBoardDto(boardDto);
         return result;
     }
 
-    // 게시판 삭제 메소드
+    /*
+     * 게시판 삭제 메소드
+     * 파라미터 : boardId
+     * */
     public int removeBoardByBoardId(Long boardId) {
         int result = 0;
         if(boardId != null){
@@ -44,7 +53,10 @@ public class BoardService {
         }
 
     }
-
+    /*
+     * 게시판 수정 메소드
+     * 파라미터 : boardDto(boardId, displayName, boardType, boardState)
+     * */
     public int modifyBoardByBoardId(BoardDto boardDto) {
         int result = 0;
         if(boardDto.getBoardId() != null){

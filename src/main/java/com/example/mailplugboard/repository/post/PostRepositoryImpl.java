@@ -17,8 +17,8 @@ public class PostRepositoryImpl implements PostRepository{
     private final SqlSession session;
 
     /*
-     * 파라미터 : boardId
      * 해당 게시판의 게시글을 전부 가져오는 메소드
+     * 파라미터 : boardId
      * */
     @Override
     public List<PostDto> selectPostListByBoardId(Long boardId) {
@@ -33,12 +33,11 @@ public class PostRepositoryImpl implements PostRepository{
     }
 
     /*
-     * 파라미터 : map (boardId, postId)
      * 게시글의 상세 내역 조회
+     * 파라미터 : boardId, postId
      * */
     @Override
     public PostDto selectPostByBoradIdAndPostId(Map<String, Long> boardIdAndPostId) {
-        System.out.println("map 파리미터확인 => "+boardIdAndPostId.get("boardId")+"//"+boardIdAndPostId.get("postId"));
         PostDto postDto = null;
         try {
             postDto = session.selectOne("selectPostByBoardIdAndPostId", boardIdAndPostId);
@@ -48,5 +47,52 @@ public class PostRepositoryImpl implements PostRepository{
             log.error("레파지토리 selectPostByBoardIdAndPostId 에러 -> {}", e.getMessage());
         }
         return postDto;
+    }
+    /*
+     * 게시글 등록 메소드
+     * 파라미터 : postDto(boardId, title, displayName, contents)
+     * */
+    @Override
+    public int insertPostByPostDto(PostDto postDto) {
+        int result = 0;
+        try {
+            result = session.insert("insertPostByPostDto", postDto);
+            log.info("레파지토리 insertPostByPostDto result -> {}",result);
+        }catch (Exception e){
+            log.error("레파지토리 insertPostByPostDto result -> {}",e.getMessage());
+        }
+        return result;
+    }
+
+    /*
+     * 게시글 수정 메소드
+     * 파라미터 : postDto (boardId, postId, title, displayName, contents)
+     * */
+    @Override
+    public int updatePostByPostDto(PostDto postDto) {
+        int result = 0;
+        try {
+            result = session.update("updatePostByPostDto", postDto);
+            log.info("레파지토리 updatePostByPostDto result => {}",result);
+        }catch (Exception e){
+            log.error("레파지토리 updatePostByPostDto 에러 => {}",e.getMessage());
+        }
+        return result;
+    }
+
+    /*
+     * 게시글 삭제 메소드
+     * 파라미터 : (map) boardId, postId
+     * */
+    @Override
+    public int deletePostByBoardIdAndPostId(Map<String, Long> boardIdAndPostId) {
+        int result = 0;
+        try{
+            result = session.delete("deletePostByBoardIdAndPostId", boardIdAndPostId);
+            log.info("레파지토리 deletePostByBoardIdAndPostId result -> {}",result);
+        }catch (Exception e){
+            log.error("레파지토리 deletePostByBoardIdAndPostId 에러 -> {}", e.getMessage());
+        }
+        return result;
     }
 }
