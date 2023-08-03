@@ -10,4 +10,11 @@
           AND p.board_id = #{board_id}
         ORDER BY p.post_id
     </select>
+
+    <select id="selectPostByBoardIdAndPostId" parameterType="java.util.Map" resultType="PostDto">
+        SELECT *
+        FROM  post
+        WHERE board_id = #{boardId} AND post_id = #{postId}
+    </select>
+
 </mapper>
