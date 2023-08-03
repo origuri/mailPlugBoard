@@ -23,7 +23,11 @@ public class BoardController {
         return "home";
     }*/
     
-    // 게시판 전부를 가져오는 메소드
+
+    /*
+    * 게시판 전부를 가져오는 메소드
+    * 파라미터 : 없음
+    * */
     @GetMapping("")
     @ResponseBody
     public ResponseEntity boardList(){
@@ -32,13 +36,21 @@ public class BoardController {
         return new ResponseEntity<>(boardListDto, HttpStatus.OK);
     }
 
-    // 게시판 생성 form으로 가는 메소드
+
+    /*
+    * 게시판 작성 form으로 가는 메소드
+    * 파라미터 : 없음
+    * */
     @GetMapping("/write")
     public String boardWriteForm(){
         return "board/boardWriteForm";
     }
 
-    // 게시판 생성 메소드
+
+    /*
+    * 게시판 생성 메소드
+    * 파라미터 : boradDto(displayName, boardType)
+    * */
     @PostMapping("/write")
     @ResponseBody
     public ResponseEntity<String> boardAddByBoardDto(@RequestBody BoardDto boardDto){
@@ -52,7 +64,10 @@ public class BoardController {
         }
     }
 
-    // 게시판 삭제 메소드
+    /*
+    * 게시판 삭제 메소드
+    * 파라미터 : boardId
+    * */
     @DeleteMapping("/{boardId}")
     @ResponseBody
     public ResponseEntity<String> boardRemoveByBoardId(@PathVariable("boardId") Long boardId){
@@ -65,7 +80,10 @@ public class BoardController {
         }
     }
 
-    // 게시판 수정 메소드
+    /*
+    * 게시판 수정 메소드
+    * 파라미터 : boardDto(boardId, displayName, boardType, boardState)
+    * */
     @PutMapping("/{boardId}")
     @ResponseBody
     public ResponseEntity<String> boardModifyByBoardId(@RequestBody BoardDto boardDto){

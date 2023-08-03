@@ -17,6 +17,7 @@ public class PostDto extends CommonDto {
     private String contents;
     private int commentsCount;
 
+    // 전체 게시판 조회용
     private String boardDisplayName;
 
 }

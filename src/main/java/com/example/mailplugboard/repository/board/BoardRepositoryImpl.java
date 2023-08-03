@@ -14,7 +14,10 @@ import java.util.List;
 public class BoardRepositoryImpl implements BoardRepository {
     private final SqlSession session;
 
-    // 게시판 조회 메소드
+    /*
+     * 게시판 전부를 가져오는 메소드
+     * 파라미터 : 없음
+     * */
     @Override
     public List<BoardDto> selectBoardList() {
         List<BoardDto> boardDtos = null;
@@ -27,7 +30,10 @@ public class BoardRepositoryImpl implements BoardRepository {
         return boardDtos;
     }
 
-    // 게시판 생성 메소드
+    /*
+     * 게시판 생성 메소드
+     * 파라미터 : boradDto(displayName, boardType)
+     * */
     @Override
     public int insertBoardByBoardDto(BoardDto boardDto) {
         int result = 0;
@@ -40,7 +46,10 @@ public class BoardRepositoryImpl implements BoardRepository {
         return result;
     }
 
-    // 게시판 삭제 메소드
+    /*
+     * 게시판 삭제 메소드
+     * 파라미터 : boardId
+     * */
     @Override
     public int deleteBoardByBoardId(Long boardId) {
         int result = 0;
@@ -51,7 +60,10 @@ public class BoardRepositoryImpl implements BoardRepository {
         }
         return result;
     }
-    // 게시판 수정 메소드
+    /*
+     * 게시판 수정 메소드
+     * 파라미터 : boardDto(boardId, displayName, boardType, boardState)
+     * */
     @Override
     public int updateBoardByBoardId(BoardDto boardDto) {
         int result = 0;

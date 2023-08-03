@@ -8,23 +8,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-//@RequestMapping("board/{boardId}")
+@RequestMapping("board/{boardId}")
 public class PostController {
     private final PostService postService;
 
     /*
-     * 파라미터 : boardId
      * 해당 게시판의 게시글을 전부 가져오는 메소드
+     * 파라미터 : boardId
      * */
-    @GetMapping("board/{boardId}/post")
+    @GetMapping("/post")
     @ResponseBody
     public ResponseEntity postListByBoardId(@PathVariable("boardId") Long boardId){
         log.info("boardId 잘 넘어오나? -> {}", boardId);
@@ -37,10 +34,10 @@ public class PostController {
     }
 
     /*
-     * 파라미터 : boardId, postId
      * 게시글의 상세 내역 조회
+     * 파라미터 : boardId, postId
      * */
-    @GetMapping("board/{boardId}/post/{postId}")
+    @GetMapping("/post/{postId}")
     @ResponseBody
     public ResponseEntity postDetailByBoardIdAndPostId(@PathVariable("boardId") Long boardId,
                                                        @PathVariable("postId") Long postId){
@@ -54,6 +51,56 @@ public class PostController {
 
     }
 
+    /*
+    * 게시글 등록 메소드
+    * 파라미터 : postDto(boardId, title, displayName, contents)
+    * */
+    @PostMapping("/post")
+    @ResponseBody
+    public ResponseEntity postAddByPostDto(@PathVariable("boardId") Long boardId, @RequestBody PostDto postDto){
+        postDto.setBoardId(boardId);
+        int result = postService.addPostByPostDto(postDto);
+        if(result > 0 ){
+            return new ResponseEntity("게시글 등록 성공", HttpStatus.OK);
+        }else{
+            return new ResponseEntity("게시글 등록 실패", HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    /*
+    * 게시글 수정 메소드
+    * 파라미터 : postDto (boardId, postId, title, displayName, contents)
+    * */
+    @PutMapping("/post/{postId}")
+    @ResponseBody
+    public ResponseEntity postModifyByPostDto(@PathVariable("boardId") Long boardId,
+                                              @PathVariable("postId") Long postId,
+                                              @RequestBody PostDto postDto){
+        log.info("boardId, postId -> {}, {}", boardId, postId);
+        postDto.setPostId(postId);
+        postDto.setBoardId(boardId);
+        int result = postService.modifyPostByPostDto(postDto);
+        if(result > 0 ){
+            return new ResponseEntity("게시글 수정 성공", HttpStatus.OK);
+        }else{
+            return new ResponseEntity("게시글 수정 실패", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /*
+    * 게시글 삭제 메소드
+    * 파라미터 : boardId, postId
+    * */
+    @DeleteMapping("/post/{postId}")
+    @ResponseBody
+    public ResponseEntity postRemoveByBoardIdAndPostId(@PathVariable("boardId") Long boardId,
+                                                       @PathVariable("postId") Long postId){
+        int result = postService.removePostByBoardIdAndPostId(boardId,postId);
+        if(result > 0 ){
+            return new ResponseEntity("게시글 삭제 성공", HttpStatus.OK);
+        }else{
+            return new ResponseEntity("게시글 삭제 실패", HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
