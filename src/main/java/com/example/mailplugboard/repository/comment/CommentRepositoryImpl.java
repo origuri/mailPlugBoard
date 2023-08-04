@@ -63,4 +63,53 @@ public class CommentRepositoryImpl implements CommentRepository{
         }
         return result;
     }
+
+    /*
+     * 내가 입력한 비밀번호와 db의 비밀번하 일치하는 지 확인하는 메소드
+     * 파라미터 : commentDto(boardId, postId, commentId)
+     * */
+    @Override
+    public String selectCommentDbPasswordByCommentDto(CommentDto commentDto) {
+        String dbPassword = null;
+        try {
+            dbPassword = session.selectOne("selectCommentDbPasswordByCommentDto", commentDto);
+            log.info("레파지토리 selectCommentDbPasswordByCommentDto dbPassword -> {}",dbPassword);
+        }catch (Exception e){
+            log.info("레파지토리 selectCommentDbPasswordByCommentDto 에러 -> {}",e.getMessage());
+        }
+        return dbPassword;
+    }
+
+    /*
+     * 특정 댓글을 수정하는 메소드
+     * 파라미터 : CommentDto(boardId, postId, commentId, content)
+     * */
+    @Override
+    public int updateCommentByCommentDto(CommentDto commentDto) {
+        int result = 0;
+        try {
+            result = session.update("updateCommentByCommentDto", commentDto);
+            log.info("레파지토리 updateCommentByCommentDto result -> {}",result);
+        }catch (Exception e){
+            log.error("레파지토리 updateCommentByCommentDto 에러 -> {}",e.getMessage());
+        }
+
+        return result;
+    }
+
+    /*
+     * 댓글 삭제 메소드
+     * 파라미터 CommentDto(boardId, postId, commentId, password)
+     * */
+    @Override
+    public int deleteCommentByCommentDto(CommentDto commentDto) {
+        int result = 0;
+        try {
+            result = session.delete("deleteCommentByCommentDto", commentDto);
+            log.info("레파지토리 deleteCommentByCommentDto result -> {}",result);
+        }catch (Exception e){
+            log.info("레파지토리 deleteCommentByCommentDto 에러 -> {}",e.getMessage());
+        }
+        return result;
+    }
 }

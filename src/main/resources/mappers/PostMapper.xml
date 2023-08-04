@@ -2,18 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="postMapper">
+
     <!--특정 게시판에 있는 게시글 전체 조회-->
+    <!--password 안나오게-->
     <select id="selectPostListByBoardId" parameterType="java.lang.Long" resultType="PostDto">
-        SELECT p.*, b.display_name AS board_display_name
-        FROM post p, board b
-        WHERE p.board_id = b.board_id
-          AND p.board_id = #{board_id}
+        SELECT  p.board_id, p.post_id, p.title, p.display_name, p.contents, p.comments_count, p.created_date_time, p.updated_date_time, b.display_name AS board_display_name
+        FROM    post p, board b
+        WHERE   p.board_id = b.board_id
+        AND     p.board_id = #{board_id}
         ORDER BY p.created_date_time DESC
     </select>
 
     <!--게시글 상세 조회-->
     <select id="selectPostByBoardIdAndPostId" parameterType="java.util.Map" resultType="PostDto">
-        SELECT p.*, b.display_name AS board_display_name
+        SELECT  p.board_id, p.post_id, p.title, p.display_name, p.contents, p.comments_count, p.created_date_time, p.updated_date_time, b.display_name AS board_display_name
         FROM  post p, board b
         WHERE p.board_id = b.board_id
         AND p.board_id = #{boardId} AND p.post_id = #{postId}
@@ -21,7 +23,7 @@
 
     <!-- 게시글 등록-->
     <insert id="insertPostByPostDto" parameterType="PostDto">
-        INSERT INTO post(board_id, post_id, title, display_name, contents, created_date_time)
+        INSERT INTO post(board_id, post_id, title, display_name, password, contents, created_date_time)
         VALUES (
                 #{boardId},
                    COALESCE(
@@ -29,6 +31,7 @@
                        )
                , #{title}
                , #{displayName}
+               , #{password}
                , #{contents}
                , CURRENT_TIMESTAMP
                );
@@ -46,7 +49,7 @@
     </update>
 
     <!--게시글 삭제-->
-    <delete id="deletePostByBoardIdAndPostId" parameterType="java.util.Map">
+    <delete id="deletePostByPostDto" parameterType="PostDto">
         DELETE
         FROM    post
         where   board_id = #{boardId}
@@ -54,10 +57,29 @@
     </delete>
 
     <!--댓글 등록 시 commentCount 올려줌-->
-    <update id="updatePostCountsByCommentDto" parameterType="java.util.Map">
+    <update id="updatePlusPostCommentsCountByCommentDto" parameterType="CommentDto">
         UPDATE  post
         SET     comments_count = ((SELECT comments_count FROM post WHERE board_id = #{boardId} and post_id = #{postId})+1)
         WHERE   board_id = #{boardId} and post_id = #{postId}
     </update>
 
+    <!--댓글 삭제 시 commentCount 내려줌-->
+    <!--commnetsCount가 음수가 되면 안됨.-->
+    <update id="updateMinusPostCommentsCountByCommentDto" parameterType="CommentDto">
+        UPDATE post
+        SET comments_count = CASE
+                                 WHEN (SELECT comments_count FROM post WHERE board_id = #{boardId} AND post_id = #{postId}) > 0
+                                 THEN (SELECT comments_count FROM post WHERE board_id = #{boardId} AND post_id = #{postId}) - 1
+                                 ELSE (SELECT comments_count FROM post WHERE board_id = #{boardId} AND post_id = #{postId})
+                             END
+        WHERE board_id = #{boardId} AND post_id = #{postId}
+    </update>
+
+    <!--해당 게시물 수정, 삭제 시 입력한 비밀번호 가져오기-->
+    <select id="selectPostDbPasswordByPostDto" parameterType="PostDto" resultType="java.lang.String">
+        SELECT  password
+        FROM    post
+        WHERE   board_id    = #{boardId}
+        AND     post_id     = #{postId}
+    </select>
 </mapper>

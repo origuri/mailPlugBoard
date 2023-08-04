@@ -22,7 +22,7 @@ public class CommentController {
     * 특정 게시글에 달린 댓글 리스트 가져오는 메소드
     * 파라미터 : boardId, postId
     * */
-    @GetMapping("/comments")
+    @GetMapping("/comment")
     public ResponseEntity commentsListByBoardIdAndPostId(@PathVariable("boardId") Long boardId,
                                                          @PathVariable("postId") Long postId){
         CommentListDto commentListDto = commentService.findCommentListByBoardIdAndPostId(boardId, postId);
@@ -37,7 +37,7 @@ public class CommentController {
     * 댓글 상세 조회
     * 파라미터 : boardId, postId, commentId
     * */
-    @GetMapping("/comments/{commentId}")
+    @GetMapping("/comment/{commentId}")
     public ResponseEntity commentDetailByBoardIdAndPostIdAndCommentId(@PathVariable("boardId")   Long boardId,
                                                                       @PathVariable("postId")    Long postId,
                                                                       @PathVariable("commentId") Long commentId){
@@ -51,9 +51,9 @@ public class CommentController {
 
     /*
     * 특정 게시글에 댓글 등록 메소드
-    * 파라미터 : boardId, postId, commentDto(displayName, contents)
+    * 파라미터 : commentDto(boardId, postId, displayName, password, contents)
     * */
-    @PostMapping("/comments/write")
+    @PostMapping("/comment/write")
     @ResponseBody
     public ResponseEntity commentAddByCommentDto(@PathVariable("boardId")   Long boardId,
                                                  @PathVariable("postId")    Long postId,
@@ -68,7 +68,50 @@ public class CommentController {
         }
     }
 
+    /*
+    * 특정 댓글을 수정하는 메소드
+    * 파라미터 : CommentDto(boardId, postId, commentId, content, password)
+    * */
+    @PutMapping("/comment/{commentId}")
+    @ResponseBody
+    public ResponseEntity commentModifyByCommentDto(@PathVariable("boardId")   Long boardId,
+                                                    @PathVariable("postId")    Long postId,
+                                                    @PathVariable("commentId") Long commentId,
+                                                    @RequestBody CommentDto commentDto){
+        commentDto.setBoardId(boardId);
+        commentDto.setPostId(postId);
+        commentDto.setCommentId(commentId);
+        int result = commentService.modifyCommentByCommentDto(commentDto);
+        if(result == 1){
+            return new ResponseEntity("댓글 수정 성공", HttpStatus.OK);
+        }else if(result == 2){
+            return new ResponseEntity("수정 실패 : 비밀번호를 확인해 주세요", HttpStatus.BAD_REQUEST);
+        }else{
+            return new ResponseEntity("수정 실패", HttpStatus.BAD_REQUEST);
+        }
+    }
 
-
+    /*
+    * 댓글 삭제 메소드
+    * 파라미터 CommentDto(boardId, postId, commentId, password)
+    * */
+    @DeleteMapping("/comment/{commentId}")
+    @ResponseBody
+    public ResponseEntity commentRemoveByCommentDto(@PathVariable("boardId")   Long boardId,
+                                                    @PathVariable("postId")    Long postId,
+                                                    @PathVariable("commentId") Long commentId,
+                                                    @RequestBody CommentDto commentDto){
+        commentDto.setBoardId(boardId);
+        commentDto.setPostId(postId);
+        commentDto.setCommentId(commentId);
+        int result = commentService.removeCommentByCommentDto(commentDto);
+        if(result == 1){
+            return new ResponseEntity("댓글 삭제 성공", HttpStatus.OK);
+        }else if(result == 2){
+            return new ResponseEntity("삭제 실패 : 비밀번호를 확인해 주세요", HttpStatus.BAD_REQUEST);
+        }else{
+            return new ResponseEntity("삭제 실패", HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

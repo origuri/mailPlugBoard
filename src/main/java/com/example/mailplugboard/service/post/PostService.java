@@ -20,6 +20,19 @@ public class PostService {
     private final PostRepository postRepository;
 
     /*
+     * selectPostDbPasswordByPostDto =>
+     * 내가 입력한 비밀번호와 db의 비밀번하 일치하는 지 확인하는 메소드
+     * 파라미터 : postDto(boardId, postId)
+     * */
+    private boolean checkDbPassword(PostDto postDto){
+        String rawPassword = postDto.getPassword();
+        String dbPassword = postRepository.selectPostDbPasswordByPostDto(postDto);
+        log.info("modifyCommentByCommentDto 비번 확인 -> {}",rawPassword.equals(dbPassword));
+
+        return rawPassword.equals(dbPassword);
+    }
+
+    /*
      * 해당 게시판의 게시글을 전부 가져오는 메소드
      * 파라미터 : boardId
      * */
@@ -46,7 +59,7 @@ public class PostService {
 
     /*
      * 게시글 등록 메소드
-     * 파라미터 : postDto(boardId, title, displayName, contents)
+     * 파라미터 : postDto(boardId, title, displayName, password, contents)
      * */
     public int addPostByPostDto(PostDto postDto) {
         if(postDto.getDisplayName() == null || postDto.getTitle() == null || postDto.getBoardId() == null || postDto.getContents() == null) {
@@ -57,26 +70,36 @@ public class PostService {
 
     /*
      * 게시글 수정 메소드
-     * 파라미터 : postDto (boardId, postId, title, displayName, contents)
+     * 파라미터 : postDto (boardId, postId, title, displayName, password, contents)
      * */
     public int modifyPostByPostDto(PostDto postDto) {
         if(postDto.getDisplayName() == null || postDto.getTitle() == null || postDto.getBoardId() == null || postDto.getContents() == null || postDto.getPostId() == null) {
             throw new NullPointerException("게시물 수정에 실패하였습니다.");
         }
-        return postRepository.updatePostByPostDto(postDto);
+        int result = 0;
+
+        if(checkDbPassword(postDto)){
+            result = postRepository.updatePostByPostDto(postDto);
+            return result;
+        } else {
+            return 2;
+        }
     }
 
     /*
      * 게시글 삭제 메소드
-     * 파라미터 : boardId, postId
+     * 파라미터 : postDto(boardId, postId, password)
      * */
-    public int removePostByBoardIdAndPostId(Long boardId, Long postId) {
-        if(boardId == null || postId == null){
+    public int removePostByPostDto(PostDto postDto) {
+        if(postDto.getBoardId() == null || postDto.getPostId() == null){
             throw new NullPointerException("게시물 삭제에 실패하였습니다.");
         }
-        Map<String, Long> boardIdAndPostId = new HashMap<>();
-        boardIdAndPostId.put("boardId", boardId);
-        boardIdAndPostId.put("postId", postId);
-        return postRepository.deletePostByBoardIdAndPostId(boardIdAndPostId);
+        int result = 0;
+        if(checkDbPassword(postDto)){
+            result = postRepository.deletePostByPostDto(postDto);
+            return result;
+        } else {
+            return 2;
+        }
     }
 }
