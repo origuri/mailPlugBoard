@@ -1,5 +1,6 @@
 package com.example.mailplugboard.repository.post;
 
+import com.example.mailplugboard.model.comment.CommentDto;
 import com.example.mailplugboard.model.post.PostDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class PostRepositoryImpl implements PostRepository{
     }
     /*
      * 게시글 등록 메소드
-     * 파라미터 : postDto(boardId, title, displayName, contents)
+     * 파라미터 : postDto(boardId, title, displayName, password, contents)
      * */
     @Override
     public int insertPostByPostDto(PostDto postDto) {
@@ -66,7 +67,7 @@ public class PostRepositoryImpl implements PostRepository{
 
     /*
      * 게시글 수정 메소드
-     * 파라미터 : postDto (boardId, postId, title, displayName, contents)
+     * 파라미터 : postDto (boardId, postId, title, displayName, password, contents)
      * */
     @Override
     public int updatePostByPostDto(PostDto postDto) {
@@ -82,16 +83,16 @@ public class PostRepositoryImpl implements PostRepository{
 
     /*
      * 게시글 삭제 메소드
-     * 파라미터 : (map) boardId, postId
+     * 파라미터 : postDto(boardId, postId, password)
      * */
     @Override
-    public int deletePostByBoardIdAndPostId(Map<String, Long> boardIdAndPostId) {
+    public int deletePostByPostDto(PostDto postDto) {
         int result = 0;
         try{
-            result = session.delete("deletePostByBoardIdAndPostId", boardIdAndPostId);
-            log.info("레파지토리 deletePostByBoardIdAndPostId result -> {}",result);
+            result = session.delete("deletePostByPostDto", postDto);
+            log.info("레파지토리 deletePostByPostDto result -> {}",result);
         }catch (Exception e){
-            log.error("레파지토리 deletePostByBoardIdAndPostId 에러 -> {}", e.getMessage());
+            log.error("레파지토리 deletePostByPostDto 에러 -> {}", e.getMessage());
         }
         return result;
     }
@@ -101,15 +102,48 @@ public class PostRepositoryImpl implements PostRepository{
      * 파라미터 : boardId, postId
      * */
     @Override
-    public int updatePostCountsByCommentDto(Map<String, Long> boardIdAndPostId) {
+    public int updatePlusPostCommentsCountByCommentDto(CommentDto commentDto) {
         int result = 0;
         try{
-            result = session.update("updatePostCountsByCommentDto", boardIdAndPostId);
+            result = session.update("updatePlusPostCommentsCountByCommentDto", commentDto);
             log.info("레파지토리 updatePostCountsByCommentDto result -> {}",result);
         }catch (Exception e){
             log.error("레파지토리 updatePostCountsByCommentDto 에러 -> {}", e.getMessage());
 
         }
         return result;
+    }
+
+    /*
+     * 댓글 삭제 성공 시에 commentCount를 내려주는 메소드
+     * 파라미터 : boardId, postId
+     * */
+    @Override
+    public int updateMinusPostCommentsCountByCommentDto(CommentDto commentDto) {
+        int result = 0;
+        try {
+            result = session.update("updateMinusPostCommentsCountByCommentDto", commentDto);
+            log.info("레파지토리 updateMinusPostCommentsCountByCommentDto result -> {}",result);
+        }catch (Exception e){
+            log.error("레파지토리 updateMinusPostCommentsCountByCommentDto 에러 -> {}", e.getMessage());
+
+        }
+        return result;
+    }
+    /*
+     * selectPostDbPasswordByPostDto =>
+     * 내가 입력한 비밀번호와 db의 비밀번하 일치하는 지 확인하는 메소드
+     * 파라미터 : postDto(boardId, postId)
+     * */
+    @Override
+    public String selectPostDbPasswordByPostDto(PostDto postDto) {
+        String dbPassword = null;
+        try {
+            dbPassword = session.selectOne("selectPostDbPasswordByPostDto", postDto);
+            log.info("레파지토리 selectPostDbPasswordByPostDto dbPassword -> {}",dbPassword);
+        }catch (Exception e){
+            log.info("레파지토리 selectPostDbPasswordByPostDto 에러 -> {}",e.getMessage());
+        }
+        return dbPassword;
     }
 }

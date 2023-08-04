@@ -23,6 +23,19 @@ public class CommentService {
     private final PostRepository postRepository;
 
     /*
+     * selectCommentDbPasswordByCommentDto =>
+     * 내가 입력한 비밀번호와 db의 비밀번하 일치하는 지 확인하는 메소드
+     * 파라미터 : commentDto(boardId, postId, commentId)
+     * */
+    private boolean checkDbPassword(CommentDto commentDto){
+        String rawPassword = commentDto.getPassword();
+        String dbPassword = commentRepository.selectCommentDbPasswordByCommentDto(commentDto);
+        log.info("modifyCommentByCommentDto 비번 확인 -> {}",rawPassword.equals(dbPassword));
+
+        return rawPassword.equals(dbPassword);
+    }
+
+    /*
      * 특정 게시글에 달린 댓글 리스트 가져오는 메소드
      * 파라미터 : boardId, postId
      * */
@@ -68,30 +81,82 @@ public class CommentService {
 
     /*
      * 특정 게시글에 댓글 등록 메소드
-     * 파라미터 : boardId, postId, commentDto(displayName, contents)
+     * 파라미터 : commentDto(boardId, postId, displayName, password, contents)
      *
-     * updatePostCountsByCommentDto
+     * updatePlusPostCountsByCommentDto
      * => 댓글 등록 성공 시 post에 commentCount를 올려주는 메소드
      * */
     public int addCommentByCommentDto(CommentDto commentDto) {
         if(commentDto.getBoardId() == null || commentDto.getPostId() == null){
             throw new NullPointerException("boardId나 postId가 null 입니다.");
         }
-        int commentsCountPlus = 0;
+        int plusCommentsCount = 0;
         int result = commentRepository.insertCommentByCommentDto(commentDto);
 
         if(result > 0){
-            Map<String, Long> boardIdAndPostId = new HashMap<>();
-            log.info("댓글 수 업뎃 boardId, postId -> {}, {}",commentDto.getBoardId(),commentDto.getPostId());
-            boardIdAndPostId.put("boardId", commentDto.getBoardId());
-            boardIdAndPostId.put("postId", commentDto.getPostId());
-
-            commentsCountPlus = postRepository.updatePostCountsByCommentDto(boardIdAndPostId);
+            plusCommentsCount = postRepository.updatePlusPostCommentsCountByCommentDto(commentDto);
         }
 
-        if(result > 0 && commentsCountPlus > 0){
+        if(result > 0 && plusCommentsCount > 0){
             return result;
         }else {
+            return 0;
+        }
+    }
+
+    /*
+     * 특정 댓글을 수정하는 메소드
+     * 파라미터 : CommentDto(boardId, postId, commentId, content, password)
+     * */
+    public int modifyCommentByCommentDto(CommentDto commentDto) {
+        if(commentDto.getBoardId() == null || commentDto.getPostId() == null || commentDto.getCommentId() == null) {
+            throw new NullPointerException("boardId나 postId, commentId가 null 입니다.");
+        }
+        int result = 0;
+
+        if(checkDbPassword(commentDto)){
+            result = commentRepository.updateCommentByCommentDto(commentDto);
+            return result;
+        } else {
+            return 2;
+        }
+
+    }
+
+
+    /*
+     * 댓글 삭제 메소드
+     * 파라미터 CommentDto(boardId, postId, commentId, password)
+     *
+     * updateMinusPostCommentsCountByCommentDto
+     * => 댓글 삭제 시 post의 commentsCount를 감소시킴.
+     * 파라미터 CommentDto(boardId, postId)
+     * */
+    public int removeCommentByCommentDto(CommentDto commentDto) {
+        if(commentDto.getBoardId() == null || commentDto.getPostId() == null || commentDto.getCommentId() == null) {
+            throw new NullPointerException("boardId나 postId, commentId가 null 입니다.");
+        }
+        int result = 0;
+        int minusCommentCount = 0;
+
+        // db 비번 체크
+        if(checkDbPassword(commentDto)){
+            result = commentRepository.deleteCommentByCommentDto(commentDto);
+        }else {
+            // 비번 오류
+            return 2;
+        }
+
+        // commentsCount 감소
+        if(result > 0){
+            minusCommentCount = postRepository.updateMinusPostCommentsCountByCommentDto(commentDto);
+        }
+
+        log.info("result, deleteCommentCount => {}, {}",result,minusCommentCount);
+
+        if(result == 1 && minusCommentCount == 1){
+            return result;
+        }else{
             return 0;
         }
     }

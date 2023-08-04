@@ -25,8 +25,9 @@
     </select>
 
     <!--댓글 등록-->
+    <!--COALESCE => 첫 댓글이면 max가 1로 되게 -->
     <insert id="insertCommentByCommentDto" parameterType="CommentDto">
-        INSERT INTO comment(board_id, post_id, comment_id, display_name, contents, created_date_time)
+        INSERT INTO comment(board_id, post_id, comment_id, display_name, password, contents, created_date_time)
         values(
                   #{boardId},
                   #{postId},
@@ -34,9 +35,37 @@
                           (SELECT MAX(comment_id)+1 FROM comment where board_id = #{boardId} and post_id =#{postId}),1
                       ),
                   #{displayName},
+                  #{password},
                   #{contents},
                   CURRENT_TIMESTAMP
               )
     </insert>
 
+    <!--댓글 수정, 삭제 시 입력한 비밀번호 가져오기-->
+    <select id="selectCommentDbPasswordByCommentDto" parameterType="CommentDto" resultType="java.lang.String">
+        SELECT  password
+        FROM    comment
+        WHERE   board_id  = #{boardId}
+        AND     post_id     = #{postId}
+        AND     comment_id  = #{commentId}
+    </select>
+
+    <!--댓글 수정-->
+    <update id="updateCommentByCommentDto" parameterType="CommentDto">
+        UPDATE  comment
+        SET     contents    = #{contents},
+                updated_date_time = CURRENT_TIMESTAMP
+        WHERE   board_id    = #{boardId}
+        AND     post_id     = #{postId}
+        AND     comment_id  = #{commentId}
+    </update>
+
+    <!--댓글 삭제-->
+    <delete id="deleteCommentByCommentDto" parameterType="CommentDto">
+        DELETE
+        FROM comment
+        WHERE board_id  = #{boardId}
+        AND post_id     = #{postId}
+        AND comment_id  = #{commentId}
+    </delete>
 </mapper>

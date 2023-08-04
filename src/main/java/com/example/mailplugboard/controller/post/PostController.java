@@ -53,7 +53,7 @@ public class PostController {
 
     /*
     * 게시글 등록 메소드
-    * 파라미터 : postDto(boardId, title, displayName, contents)
+    * 파라미터 : postDto(boardId, title, displayName, password, contents)
     * */
     @PostMapping("/post/write")
     @ResponseBody
@@ -69,7 +69,7 @@ public class PostController {
 
     /*
     * 게시글 수정 메소드
-    * 파라미터 : postDto (boardId, postId, title, displayName, contents)
+    * 파라미터 : postDto (boardId, postId, title, displayName, password, contents)
     * */
     @PutMapping("/post/{postId}")
     @ResponseBody
@@ -80,8 +80,10 @@ public class PostController {
         postDto.setPostId(postId);
         postDto.setBoardId(boardId);
         int result = postService.modifyPostByPostDto(postDto);
-        if(result > 0 ){
+        if(result == 1 ){
             return new ResponseEntity("게시글 수정 성공", HttpStatus.OK);
+        }else if(result == 2){
+            return new ResponseEntity("게시글 수정 실패 : 비밀번호를 확인하세요", HttpStatus.BAD_REQUEST);
         }else{
             return new ResponseEntity("게시글 수정 실패", HttpStatus.BAD_REQUEST);
         }
@@ -89,15 +91,20 @@ public class PostController {
 
     /*
     * 게시글 삭제 메소드
-    * 파라미터 : boardId, postId
+    * 파라미터 : postDto(boardId, postId, password)
     * */
     @DeleteMapping("/post/{postId}")
     @ResponseBody
     public ResponseEntity postRemoveByBoardIdAndPostId(@PathVariable("boardId") Long boardId,
-                                                       @PathVariable("postId") Long postId){
-        int result = postService.removePostByBoardIdAndPostId(boardId,postId);
-        if(result > 0 ){
+                                                       @PathVariable("postId") Long postId,
+                                                       @RequestBody PostDto postDto){
+        postDto.setBoardId(boardId);
+        postDto.setPostId(postId);
+        int result = postService.removePostByPostDto(postDto);
+        if(result == 1 ){
             return new ResponseEntity("게시글 삭제 성공", HttpStatus.OK);
+        }else if(result == 2){
+            return new ResponseEntity("게시글 삭제 실패 : 비밀번호를 확인하세요", HttpStatus.BAD_REQUEST);
         }else{
             return new ResponseEntity("게시글 삭제 실패", HttpStatus.BAD_REQUEST);
         }

@@ -16,6 +16,7 @@ public class CommentDto extends CommonDto {
     private Long boardId;
     private Long postId;
     private String contents;
+    private String password;
 
     // 어떤 post에 달린 댓글인지 확인 용
     private String postTitle;
