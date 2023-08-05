@@ -1,5 +1,7 @@
 package com.example.mailplugboard.controller.post;
 
+import com.example.mailplugboard.model.httpResponse.HttpResponseDto;
+import com.example.mailplugboard.model.httpResponse.HttpResponseInfo;
 import com.example.mailplugboard.model.post.PostDto;
 import com.example.mailplugboard.model.post.PostListDto;
 import com.example.mailplugboard.service.post.PostService;
@@ -22,14 +24,13 @@ public class PostController {
      * 파라미터 : boardId
      * */
     @GetMapping("/post")
-    @ResponseBody
     public ResponseEntity postListByBoardId(@PathVariable("boardId") Long boardId){
         log.info("boardId 잘 넘어오나? -> {}", boardId);
         PostListDto postListDto = postService.findPostListByBoardId(boardId);
-        if(postListDto != null){
+        if(postListDto.getCount() > 0){
             return new ResponseEntity(postListDto, HttpStatus.OK);
         }else{
-            return new ResponseEntity("게시글 목록 조회 실패", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -38,7 +39,6 @@ public class PostController {
      * 파라미터 : boardId, postId
      * */
     @GetMapping("/post/{postId}")
-    @ResponseBody
     public ResponseEntity postDetailByBoardIdAndPostId(@PathVariable("boardId") Long boardId,
                                                        @PathVariable("postId") Long postId){
         log.info("boardId, postId 잘 넘오는지 확인 -> {}, {}", boardId, postId);
@@ -46,30 +46,36 @@ public class PostController {
         if(postDto != null){
             return new ResponseEntity(postDto, HttpStatus.OK);
         }else{
-            return new ResponseEntity("게시글 상세 조회 실패", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
 
     }
 
     /*
-    * 게시글 등록 메소드
-    * 파라미터 : postDto(boardId, title, displayName, password, contents)
-    * */
+     * 게시글 등록 메소드
+     * 파라미터 : postDto(boardId, title, displayName, password, contents)
+     * result : 1(정상), 2(파라미터 오류), 3(해당 게시판이 없음)
+     * */
     @PostMapping("/post/write")
     @ResponseBody
     public ResponseEntity postAddByPostDto(@PathVariable("boardId") Long boardId, @RequestBody PostDto postDto){
         postDto.setBoardId(boardId);
+        log.info(postDto.getPassword());
+
         int result = postService.addPostByPostDto(postDto);
-        if(result > 0 ){
-            return new ResponseEntity("게시글 등록 성공", HttpStatus.OK);
+        if(result == 1 ){
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage()), HttpStatus.OK);
+        }else if(result == 2){
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.BAD_REQUEST.getStatusCode(), HttpResponseInfo.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity("게시글 등록 실패", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
     /*
     * 게시글 수정 메소드
     * 파라미터 : postDto (boardId, postId, title, displayName, password, contents)
+    * result : 1(정상), 2(파라미터 오류), 3(해당 게시글이 없음)
     * */
     @PutMapping("/post/{postId}")
     @ResponseBody
@@ -79,34 +85,47 @@ public class PostController {
         log.info("boardId, postId -> {}, {}", boardId, postId);
         postDto.setPostId(postId);
         postDto.setBoardId(boardId);
+
+        if(postDto.getPassword() == null) {
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.INTERNAL_SERVER_ERROR.getStatusCode(), HttpResponseInfo.INTERNAL_SERVER_ERROR.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
         int result = postService.modifyPostByPostDto(postDto);
         if(result == 1 ){
-            return new ResponseEntity("게시글 수정 성공", HttpStatus.OK);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage()), HttpStatus.OK);
         }else if(result == 2){
-            return new ResponseEntity("게시글 수정 실패 : 비밀번호를 확인하세요", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.BAD_REQUEST.getStatusCode(), HttpResponseInfo.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity("게시글 수정 실패", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
     /*
     * 게시글 삭제 메소드
     * 파라미터 : postDto(boardId, postId, password)
+    * result : 1(정상), 2(비번 오류), 3(해당 게시글이 없음)
     * */
     @DeleteMapping("/post/{postId}")
     @ResponseBody
     public ResponseEntity postRemoveByBoardIdAndPostId(@PathVariable("boardId") Long boardId,
                                                        @PathVariable("postId") Long postId,
                                                        @RequestBody PostDto postDto){
+
         postDto.setBoardId(boardId);
         postDto.setPostId(postId);
+        if(postDto.getPassword() == null) {
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.INTERNAL_SERVER_ERROR.getStatusCode(), HttpResponseInfo.INTERNAL_SERVER_ERROR.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         int result = postService.removePostByPostDto(postDto);
+
         if(result == 1 ){
-            return new ResponseEntity("게시글 삭제 성공", HttpStatus.OK);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage()), HttpStatus.OK);
         }else if(result == 2){
-            return new ResponseEntity("게시글 삭제 실패 : 비밀번호를 확인하세요", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.BAD_REQUEST.getStatusCode(), HttpResponseInfo.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity("게시글 삭제 실패", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 

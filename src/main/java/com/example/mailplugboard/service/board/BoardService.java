@@ -33,6 +33,7 @@ public class BoardService {
     /*
      * 게시판 생성 메소드
      * 파라미터 : boradDto(displayName, boardType)
+     * result = 1(성공)
      * */
     public int addBoardByBoardDto(BoardDto boardDto) {
         int result = boardRepository.insertBoardByBoardDto(boardDto);
@@ -42,6 +43,7 @@ public class BoardService {
     /*
      * 게시판 삭제 메소드
      * 파라미터 : boardId
+     * result : 1(성공)
      * */
     public int removeBoardByBoardId(Long boardId) {
         int result = 0;
@@ -49,21 +51,18 @@ public class BoardService {
             result = boardRepository.deleteBoardByBoardId(boardId);
             return result;
         }else{
-            throw new IllegalArgumentException("id가 없습니다");
+            throw new NullPointerException("id가 없습니다");
         }
 
     }
     /*
      * 게시판 수정 메소드
      * 파라미터 : boardDto(boardId, displayName, boardType, boardState)
+     * result : 1(성공)
      * */
     public int modifyBoardByBoardId(BoardDto boardDto) {
-        int result = 0;
-        if(boardDto.getBoardId() != null){
-            result = boardRepository.updateBoardByBoardId(boardDto);
-            return result;
-        }else{
-            throw new IllegalArgumentException("id가 없습니다");
-        }
+
+        return boardRepository.updateBoardByBoardId(boardDto);
+
     }
 }

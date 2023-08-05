@@ -74,4 +74,21 @@ public class BoardRepositoryImpl implements BoardRepository {
         }
         return result;
     }
+
+    /*
+     * 해당 게시글 쓸 때 게시판 있는지 확인 하는 메소드
+     * 파라미터 : boardId
+     * */
+    @Override
+    public BoardDto selectBoardByBoardId(Long boardId) {
+        BoardDto boardDto = null;
+        try {
+            boardDto = session.selectOne("selectBoardByBoardId", boardId);
+            log.info("레파지토리 selectBoardByBoardId boardDto => {}",boardDto);
+        }catch (Exception e){
+            log.error("레파지토리 selectBoardByBoardId 에러 => {}",e.getMessage());
+
+        }
+        return boardDto;
+    }
 }
