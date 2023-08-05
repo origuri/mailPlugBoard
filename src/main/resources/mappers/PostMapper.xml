@@ -41,7 +41,6 @@
     <update id="updatePostByPostDto" parameterType="PostDto">
         UPDATE  post
         SET     title               = #{title},
-                display_name        = #{displayName},
                 contents            = #{contents},
                 updated_date_time   = CURRENT_TIMESTAMP
         WHERE   board_id            = #{boardId}

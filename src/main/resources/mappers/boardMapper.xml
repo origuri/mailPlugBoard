@@ -29,4 +29,11 @@
                 updated_date_time = CURRENT_TIMESTAMP
         WHERE   board_id        = #{boardId}
     </update>
+
+    <!--게시판이 존재하는지 확인-->
+    <select id="selectBoardByBoardId" parameterType="java.lang.Long" resultType="BoardDto">
+        SELECT  *
+        FROM    board
+        WHERE   board_id = #{boardId}
+    </select>
 </mapper>
