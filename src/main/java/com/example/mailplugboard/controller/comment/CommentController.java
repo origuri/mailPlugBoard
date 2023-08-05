@@ -63,7 +63,7 @@ public class CommentController {
     public ResponseEntity commentAddByCommentDto(@PathVariable("boardId")   Long boardId,
                                                  @PathVariable("postId")    Long postId,
                                                  @RequestBody CommentDto commentDto){
-        if(commentDto.getPassword() == null){
+        if(commentDto.getPassword() == null || commentDto.getPassword().trim().equals("")){
             return new ResponseEntity<>(new HttpResponseDto(HttpResponseInfo.INTERNAL_SERVER_ERROR.getStatusCode(), HttpResponseInfo.INTERNAL_SERVER_ERROR.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         commentDto.setBoardId(boardId);
@@ -93,7 +93,7 @@ public class CommentController {
         commentDto.setPostId(postId);
         commentDto.setCommentId(commentId);
 
-        if(commentDto.getPassword() == null) {
+        if(commentDto.getPassword() == null || commentDto.getPassword().trim().equals("")) {
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.INTERNAL_SERVER_ERROR.getStatusCode(), HttpResponseInfo.INTERNAL_SERVER_ERROR.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -123,7 +123,7 @@ public class CommentController {
         commentDto.setPostId(postId);
         commentDto.setCommentId(commentId);
 
-        if(commentDto.getPassword() == null) {
+        if(commentDto.getPassword() == null || commentDto.getPassword().trim().equals("")) {
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.INTERNAL_SERVER_ERROR.getStatusCode(), HttpResponseInfo.INTERNAL_SERVER_ERROR.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

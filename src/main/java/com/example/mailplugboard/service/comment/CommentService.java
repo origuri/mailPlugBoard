@@ -37,7 +37,7 @@ public class CommentService {
     }
 
     /*
-     * 댓글 수정 시 해당 댓글이 존재하는 지 확인하는 메소드
+     * 댓글 수정, 삭제 시 해당 댓글이 존재하는 지 확인하는 메소드
      * 파라미터 : boardId, postId, commentId
      * */
     private boolean checkSavedCommentDto(Long boardId, Long postId, Long commentId){
@@ -108,6 +108,15 @@ public class CommentService {
      * */
     public int addCommentByCommentDto(CommentDto commentDto) {
 
+        if(commentDto.getDisplayName() == null
+                || commentDto.getDisplayName().trim().equals("")
+                || commentDto.getContents() == null
+                || commentDto.getContents().trim().equals("")){
+            return 2;
+        }
+
+
+
         Map<String, Long> BoardIdAndPostId = new HashMap<>();
         BoardIdAndPostId.put("boardId", commentDto.getBoardId());
         BoardIdAndPostId.put("postId", commentDto.getPostId());
@@ -121,7 +130,7 @@ public class CommentService {
 
         if(result == 1){
             plusCommentsCount = postRepository.updatePlusPostCommentsCountByCommentDto(commentDto);
-        } else{
+        } else {
             return 2;
         }
 
