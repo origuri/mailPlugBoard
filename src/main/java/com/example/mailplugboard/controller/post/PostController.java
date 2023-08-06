@@ -23,7 +23,7 @@ public class PostController {
      * 해당 게시판의 게시글을 전부 가져오는 메소드
      * 파라미터 : boardId
      * */
-    @GetMapping("/post")
+    @GetMapping("/posts")
     public ResponseEntity postListByBoardId(@PathVariable("boardId") Long boardId){
         log.info("boardId 잘 넘어오나? -> {}", boardId);
         PostListDto postListDto = postService.findPostListByBoardId(boardId);

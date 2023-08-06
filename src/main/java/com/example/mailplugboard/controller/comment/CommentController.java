@@ -24,7 +24,7 @@ public class CommentController {
     * 특정 게시글에 달린 댓글 리스트 가져오는 메소드
     * 파라미터 : boardId, postId
     * */
-    @GetMapping("/comment")
+    @GetMapping("/comments")
     @ResponseBody
     public ResponseEntity commentsListByBoardIdAndPostId(@PathVariable("boardId") Long boardId,
                                                          @PathVariable("postId") Long postId){

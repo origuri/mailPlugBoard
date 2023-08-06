@@ -206,7 +206,7 @@ public class CommentService {
         if(result == 1 && minusCommentCount == 1){
             return result;
         }else{
-            return 0;
+            return 2;
         }
     }
 }
