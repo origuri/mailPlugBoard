@@ -111,7 +111,9 @@ public class CommentService {
         if(commentDto.getDisplayName() == null
                 || commentDto.getDisplayName().trim().equals("")
                 || commentDto.getContents() == null
-                || commentDto.getContents().trim().equals("")){
+                || commentDto.getContents().trim().equals("")
+                || commentDto.getPassword() == null
+                || commentDto.getPassword().trim().equals("")){
             return 2;
         }
 

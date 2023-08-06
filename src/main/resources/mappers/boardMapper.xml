@@ -25,7 +25,7 @@
         UPDATE  board
         SET     display_name    = #{displayName},
                 board_type      = #{boardType},
-                board_state     = #{boardState},
+                board_status     = #{boardStatus},
                 updated_date_time = CURRENT_TIMESTAMP
         WHERE   board_id        = #{boardId}
     </update>
