@@ -42,22 +42,21 @@ public class BoardController {
     /*
     * 게시판 생성 메소드
     * 파라미터 : boradDto(displayName, boardType)
-    * result = 1(성공)
+    * result = 1(성공), 2(파라미터 에러)
     * */
     @PostMapping("/write")
     @ResponseBody
     public ResponseEntity boardAddByBoardDto(@RequestBody BoardDto boardDto){
-
-        if(boardDto.getDisplayName() == null || boardDto.getBoardType() == null){
-            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.BAD_REQUEST.getStatusCode(), HttpResponseInfo.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST);
-        }
 
         int result = 0;
 
         result = boardService.addBoardByBoardDto(boardDto);
         if(result == 1){
             return new ResponseEntity<>(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage()), HttpStatus.OK);
-        }else{
+        }else if (result == 2){
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.BAD_REQUEST.getStatusCode(), HttpResponseInfo.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+        else{
             return new ResponseEntity<>(new HttpResponseDto(HttpResponseInfo.INTERNAL_SERVER_ERROR.getStatusCode(), HttpResponseInfo.INTERNAL_SERVER_ERROR.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -65,7 +64,7 @@ public class BoardController {
     /*
     * 게시판 삭제 메소드
     * 파라미터 : boardId
-    * result : 1(성공)
+    * result : 1(성공), 3(해당 게시판 없음)
     * */
     @DeleteMapping("/{boardId}")
     @ResponseBody
@@ -82,22 +81,21 @@ public class BoardController {
     /*
     * 게시판 수정 메소드
     * 파라미터 : boardDto(boardId, displayName, boardType, boardState)
-    * result : 1(성공)
+    * result : 1(성공), 2(파라미터 오류), 3 (해당 게시글 없음)
     * */
     @PutMapping("/{boardId}")
     @ResponseBody
     public ResponseEntity boardModifyByBoardId(@PathVariable("boardId") Long boardId ,
                                                        @RequestBody BoardDto boardDto){
         boardDto.setBoardId(boardId);
-        if(boardDto.getBoardId() == null || boardDto.getDisplayName() == null || boardDto.getBoardType() == null || boardDto.getBoardState() == null){
-            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.BAD_REQUEST.getStatusCode(), HttpResponseInfo.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST);
-        }
 
         log.info("boardDto 값 잘 들어왔나? -> {}", boardDto);
         int result = boardService.modifyBoardByBoardId(boardDto);
         if(result == 1){
             return new ResponseEntity<>(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage()),HttpStatus.OK);
-        }else{
+        } else if(result == 2){
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.BAD_REQUEST.getStatusCode(), HttpResponseInfo.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST);
+        } else{
             return new ResponseEntity<>(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
     }

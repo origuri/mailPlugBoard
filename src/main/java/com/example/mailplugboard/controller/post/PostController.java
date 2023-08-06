@@ -62,6 +62,7 @@ public class PostController {
         postDto.setBoardId(boardId);
         log.info(postDto.getPassword());
 
+
         int result = postService.addPostByPostDto(postDto);
         if(result == 1 ){
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage()), HttpStatus.OK);

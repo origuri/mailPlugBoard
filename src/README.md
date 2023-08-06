@@ -25,6 +25,12 @@
   - 1 : 정상 동작 (200)
   - 2 : 파라미터 오류 (400)
   - 3 : 찾을 수 없음 (404)
+###
+- **boardId, postId, commentId는 전부 Long 타입이며 1부터 시작**
+- **boardType과 status는 전부 소문자이며 해당 값을 가진다.**
+  - **boardType : normal(일반), notice(공지)**
+  - **boardStatus : activated(활성화), deactivated(비활성화)**
+
 
 # 4. url 네이밍 룰
 - Parameter가 없을 때 작성 요령

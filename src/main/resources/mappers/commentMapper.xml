@@ -15,7 +15,7 @@
 
     <!--댓글 상세 조회-->
     <select id="selectCommentByBoardIdAndPostIdAndCommentId" parameterType="java.util.Map" resultType="CommentDto">
-        SELECT c.board_id, c.post_id, c.comment_id, c.display_name, c.contents, c.created_date_time, c.updated_date_time,, p.title AS post_title
+        SELECT c.board_id, c.post_id, c.comment_id, c.display_name, c.contents, c.created_date_time, c.updated_date_time, p.title AS post_title
         FROM comment c, post p
         WHERE c.board_id = p.board_id
         AND c.post_id  = p.post_id

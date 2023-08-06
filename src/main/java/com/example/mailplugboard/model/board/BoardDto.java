@@ -14,5 +14,5 @@ public class BoardDto extends CommonDto {
 
     private Long boardId;
     private String boardType;
-    private String boardState;
+    private String boardStatus;
 }
