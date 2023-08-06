@@ -28,7 +28,7 @@ public class PostController {
         log.info("boardId 잘 넘어오나? -> {}", boardId);
         PostListDto postListDto = postService.findPostListByBoardId(boardId);
         if(postListDto.getCount() > 0){
-            return new ResponseEntity(postListDto, HttpStatus.OK);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage(), postListDto), HttpStatus.OK);
         }else{
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
@@ -44,7 +44,7 @@ public class PostController {
         log.info("boardId, postId 잘 넘오는지 확인 -> {}, {}", boardId, postId);
         PostDto postDto = postService.findPostByBoardIdAndPostId(boardId,postId);
         if(postDto != null){
-            return new ResponseEntity(postDto, HttpStatus.OK);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage(), postDto), HttpStatus.OK);
         }else{
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }

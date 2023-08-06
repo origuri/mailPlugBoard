@@ -35,19 +35,9 @@ public class BoardController {
         if(boardListDto.getCount() == 0){
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(boardListDto, HttpStatus.OK);
+        return new ResponseEntity<>(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage(), boardListDto), HttpStatus.OK);
 
     }
-
-    /*
-    * 게시판 작성 form으로 가는 메소드
-    * 파라미터 : 없음
-    * */
-    @GetMapping("/write")
-    public String boardWriteForm(){
-        return "board/boardWriteForm";
-    }
-
 
     /*
     * 게시판 생성 메소드
