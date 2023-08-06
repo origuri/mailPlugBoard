@@ -30,7 +30,7 @@ public class CommentController {
                                                          @PathVariable("postId") Long postId){
         CommentListDto commentListDto = commentService.findCommentListByBoardIdAndPostId(boardId, postId);
         if(commentListDto.getCount() > 0){
-            return new ResponseEntity(commentListDto, HttpStatus.OK);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage(), commentListDto), HttpStatus.OK);
         }else{
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND);
         }
@@ -47,7 +47,7 @@ public class CommentController {
                                                                       @PathVariable("commentId") Long commentId){
         CommonDto commonDto = commentService.findCommentByBoardIdAndPostIdAndCommentId(boardId,postId,commentId);
         if(commonDto != null){
-            return new ResponseEntity(commonDto, HttpStatus.OK);
+            return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.OK.getStatusCode(), HttpResponseInfo.OK.getMessage(), commonDto), HttpStatus.OK);
         }else{
             return new ResponseEntity(new HttpResponseDto(HttpResponseInfo.NOT_FOUND.getStatusCode(), HttpResponseInfo.NOT_FOUND.getMessage()), HttpStatus.BAD_REQUEST);
         }
